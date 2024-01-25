@@ -22,6 +22,7 @@ const Register = () => {
     setUsername('')
     setPassword('')
     setConfPwd('')
+    linkTo('/Play')
   }
 
 

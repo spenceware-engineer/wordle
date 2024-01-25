@@ -20,6 +20,7 @@ const Login = () => {
   const handleSubmit = () => {
     setUsername('')
     setPassword('')
+    linkTo('/Play')
   }
 
   return (
