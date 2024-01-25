@@ -1,22 +1,25 @@
 import { StatusBar } from 'expo-status-bar'
-import { StyleSheet, Text, View } from 'react-native'
-import { SafeAreaProvider } from 'react-native-safe-area-context'
+import { StyleSheet } from 'react-native'
+import { RecoilRoot } from 'recoil'
+import { NavigationContainer } from '@react-navigation/native'
+import RootNavigator from './src/navigation/RootNavigator'
 
 export default function App() {
   return (
-    <SafeAreaProvider style={styles.container}>
-      <StatusBar style="auto" />
-      <View>
-        <Text>SCORE: 50</Text>
-      </View>
-    </SafeAreaProvider>
+    <NavigationContainer>
+      <RecoilRoot>
+        <RootNavigator />
+        <StatusBar translucent />
+      </RecoilRoot>
+    </NavigationContainer>
   )
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    display: 'flex',
     backgroundColor: '#7b2cbf',
     alignItems: 'center',
+    justifyContent: 'center',
   },
 })
