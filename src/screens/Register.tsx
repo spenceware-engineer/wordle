@@ -10,8 +10,10 @@ import {
   SafeAreaProvider,
   SafeAreaView
 } from 'react-native-safe-area-context'
+import { useLinkTo } from '@react-navigation/native'
 
 const Register = () => {
+  const linkTo = useLinkTo()
   const [ username, setUsername ] = useState('')
   const [ password, setPassword ] = useState('')
   const [ confPwd, setConfPwd ] = useState('')
@@ -53,7 +55,7 @@ const Register = () => {
           >
             <Text style={styles.buttonText}>SIGN UP</Text>
           </Pressable>
-          <Pressable style={styles.switchAuthLink}>
+          <Pressable style={styles.switchAuthLink} onPress={() => linkTo('/Login')}>
             <Text style={styles.switchAuthText}>
               Already have an account? Sign In
             </Text>

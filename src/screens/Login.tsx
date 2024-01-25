@@ -10,8 +10,10 @@ import {
   TextInput,
   View
 } from 'react-native'
+import { useLinkTo } from '@react-navigation/native'
 
 const Login = () => {
+  const linkTo = useLinkTo()
   const [ username, setUsername ] = useState('')
   const [ password, setPassword ] = useState('')
 
@@ -43,7 +45,7 @@ const Login = () => {
           >
             <Text style={styles.buttonText}>SIGN IN</Text>
           </Pressable>
-          <Pressable style={styles.switchAuthLink}>
+          <Pressable style={styles.switchAuthLink} onPress={() => linkTo('/Register')}>
             <Text style={styles.switchAuthText}>
               Don't have an account? Sign Up
             </Text>
