@@ -4,13 +4,16 @@ import Register from '../screens/Register'
 import Play from '../screens/Play'
 import LevelSuccess from '../screens/LevelSuccess'
 import LevelFail from '../screens/LevelFail'
-import { SafeAreaProvider } from 'react-native-safe-area-context'
+import { useRecoilValue } from 'recoil'
+import currentUserState from 'recoil/currentUserAtom'
 
 const Stack = createNativeStackNavigator()
 
 const RootNavigator = () => {
+  const isLoggedIn = useRecoilValue(currentUserState)
+
   return (
-    <Stack.Navigator initialRouteName="Register" screenOptions={{ headerShown: false }}>
+    <Stack.Navigator initialRouteName={isLoggedIn ? "Play" : "Register"} screenOptions={{ headerShown: false }}>
       <Stack.Screen
         name="Register"
         component={Register}
