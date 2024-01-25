@@ -1,12 +1,15 @@
 import { StatusBar } from 'expo-status-bar'
 import { StyleSheet, Text, View } from 'react-native'
+import { SafeAreaProvider } from 'react-native-safe-area-context'
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <StatusBar style="auto" animated={true} />
-      <Text>SCORE: 50</Text>
-    </View>
+    <SafeAreaProvider style={styles.container}>
+      <StatusBar style="auto" />
+      <View>
+        <Text>SCORE: 50</Text>
+      </View>
+    </SafeAreaProvider>
   )
 }
 
