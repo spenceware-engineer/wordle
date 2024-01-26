@@ -2,9 +2,14 @@ import axios from 'axios'
 import dotenv from 'dotenv'
 dotenv.config()
 import Toast from 'react-native-toast-message'
+import { useSetRecoilState } from 'recoil'
+import currentUserState from '../recoil/currentUserAtom'
+import currentWordState from '../recoil/currentWordAtom'
 
 // register
 export const registerUser = async (username: string, password: string) => {
+  const setUserState = useSetRecoilState(currentUserState)
+  const setWordState = useSetRecoilState(currentWordState)
   const { status, data } = await axios.post(`${process.env.API_URL}/register`, {
     username,
     password
@@ -18,9 +23,8 @@ export const registerUser = async (username: string, password: string) => {
     case 409:
       return data.message
     case 201:
-      // success - set states
-      // data.username
-      // data.word
+      setUserState(() => data.username)
+      setWordState(() => data.word)
       break
     case 500:
       Toast.show({
@@ -36,6 +40,8 @@ export const registerUser = async (username: string, password: string) => {
 
 // login
 export const loginUser = async (username: string, password: string) => {
+  const setUserState = useSetRecoilState(currentUserState)
+  const setWordState = useSetRecoilState(currentWordState)
   const { status, data } = await axios.get(`${process.env.API_URL}/login`, {
     data: {
       username,
@@ -52,9 +58,8 @@ export const loginUser = async (username: string, password: string) => {
     case 403:
       return data.message
     case 200:
-      // success - set states
-      // data.username
-      // data.word
+      setUserState(() => data.username)
+      setWordState(() => data.word)
       break
     case 500:
       Toast.show({
@@ -70,6 +75,7 @@ export const loginUser = async (username: string, password: string) => {
 
 // random word
 export const generateWord = async (username: string) => {
+  const setWordState = useSetRecoilState(currentWordState)
   const { status, data } = await axios.get(`${process.env.API_URL}/random-word`, {
     data: {
       username
@@ -81,8 +87,7 @@ export const generateWord = async (username: string) => {
 
   switch (status) {
     case 200:
-    // success - set state
-    // data.word
+      setWordState(() => data.word)
     case 500:
       Toast.show({
         type: 'error',
@@ -97,6 +102,7 @@ export const generateWord = async (username: string) => {
 
 // complete word
 export const completeWord = async (username: string, word: string) => {
+  const setWordState = useSetRecoilState(currentWordState)
   const { status, data } = await axios.post(`${process.env.API_URL}/word-completed`, {
     username,
     word
@@ -108,8 +114,7 @@ export const completeWord = async (username: string, word: string) => {
 
   switch (status) {
     case 200:
-    // success - set state
-    // data.word
+      setWordState(() => data.word)
     case 500:
       Toast.show({
         type: 'error',
