@@ -4,15 +4,18 @@ import {
 } from 'react-native-safe-area-context'
 import {
   StyleSheet,
-  Text,
 } from 'react-native'
-
+import TopDisplay from '../components/TopDisplay'
+import BottomOptions from '../components/BottomOptions'
+import GuessArea from 'components/GuessArea/GuessArea'
 
 const Play = () => {
   return (
     <SafeAreaProvider>
       <SafeAreaView style={styles.container}>
-        <Text>PLAY!</Text>
+        <TopDisplay />
+        <GuessArea />
+        <BottomOptions />
       </SafeAreaView>
     </SafeAreaProvider>
   )
@@ -24,8 +27,8 @@ const styles = StyleSheet.create({
     height: '100%',
     width: '100%',
     display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
+    padding: 20,
+    justifyContent: 'space-between'
   },
 })
 
