@@ -16,6 +16,7 @@ import {
   isValidUsername,
   passwordMatch
 } from '../utils/validations'
+import Toast from 'react-native-toast-message'
 
 const Register = () => {
   const linkTo = useLinkTo()
@@ -50,6 +51,7 @@ const Register = () => {
   return (
     <SafeAreaProvider>
       <SafeAreaView style={styles.container}>
+        <Toast />
         <View style={styles.formContainer}>
           <Text
             style={

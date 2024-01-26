@@ -1,6 +1,7 @@
 import axios from 'axios'
 import dotenv from 'dotenv'
 dotenv.config()
+import Toast from 'react-native-toast-message'
 
 // register
 export const registerUser = async (username: string, password: string) => {
@@ -20,10 +21,16 @@ export const registerUser = async (username: string, password: string) => {
       // success - set states
       // data.username
       // data.word
-      break;
+      break
     case 500:
-      // toast
-      break;
+      Toast.show({
+        type: 'error',
+        text1: 'Something went wrong',
+        text2: 'Please try again or restart app',
+        visibilityTime: 2000,
+        autoHide: true,
+      })
+      break
   }
 }
 
@@ -48,10 +55,16 @@ export const loginUser = async (username: string, password: string) => {
       // success - set states
       // data.username
       // data.word
-      break;
+      break
     case 500:
-      // toast
-      break;
+      Toast.show({
+        type: 'error',
+        text1: 'Something went wrong',
+        text2: 'Please try again or restart app',
+        visibilityTime: 2000,
+        autoHide: true,
+      })
+      break
   }
 }
 
@@ -68,10 +81,17 @@ export const generateWord = async (username: string) => {
 
   switch (status) {
     case 200:
-      // success - set state
-      // data.word
+    // success - set state
+    // data.word
     case 500:
-      // toast
+      Toast.show({
+        type: 'error',
+        text1: 'Something went wrong',
+        text2: 'Please try again or restart app',
+        visibilityTime: 2000,
+        autoHide: true,
+      })
+      break
   }
 }
 
@@ -88,9 +108,16 @@ export const completeWord = async (username: string, word: string) => {
 
   switch (status) {
     case 200:
-      // success - set state
-      // data.word
+    // success - set state
+    // data.word
     case 500:
-      // toast
+      Toast.show({
+        type: 'error',
+        text1: 'Something went wrong',
+        text2: 'Please try again or restart app',
+        visibilityTime: 2000,
+        autoHide: true,
+      })
+      break
   }
 }

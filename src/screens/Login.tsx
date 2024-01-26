@@ -14,6 +14,7 @@ import { useLinkTo } from '@react-navigation/native'
 import {
   isValidPassword,
 } from '../utils/validations'
+import Toast from 'react-native-toast-message'
 
 const Login = () => {
   const linkTo = useLinkTo()
@@ -37,6 +38,7 @@ const Login = () => {
   return (
     <SafeAreaProvider>
       <SafeAreaView style={styles.container}>
+        <Toast />
         <View style={styles.formContainer}>
           <Text style={styles.inputLabel}>USERNAME</Text>
           <TextInput
