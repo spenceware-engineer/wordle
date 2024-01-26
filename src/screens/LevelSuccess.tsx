@@ -43,7 +43,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFF',
     borderRadius: 15,
     padding: 20,
-    borderColor: '#551E85',
+    borderColor: 'green',
     borderWidth: 5,
     width: '85%',
     display: 'flex',
@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
   winText: {
     fontSize: 32,
     fontWeight: 'bold',
-    color: '#551E85',
+    color: 'green',
   },
   continueButton: {
     borderRadius: 15,
