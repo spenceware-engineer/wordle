@@ -13,7 +13,7 @@ const RootNavigator = () => {
   const isLoggedIn = useRecoilValue(currentUserState)
 
   return (
-    <Stack.Navigator initialRouteName={isLoggedIn ? "Play" : "Register"} screenOptions={{ headerShown: false }}>
+    <Stack.Navigator initialRouteName={isLoggedIn ? "Play" : "Login"} screenOptions={{ headerShown: false }}>
       <Stack.Screen
         name="Register"
         component={Register}

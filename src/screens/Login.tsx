@@ -11,16 +11,27 @@ import {
   View
 } from 'react-native'
 import { useLinkTo } from '@react-navigation/native'
+import {
+  isValidPassword,
+} from '../utils/validations'
 
 const Login = () => {
   const linkTo = useLinkTo()
   const [ username, setUsername ] = useState('')
   const [ password, setPassword ] = useState('')
+  const [ passwordErrors, setPasswordErrors ] = useState<string[]>([])
+
+  const changeUsername = (un: string) => {
+    setUsername(un)
+  }
+
+  const changePassword = (pw: string) => {
+    setPasswordErrors([])
+    setPassword(pw)
+  }
 
   const handleSubmit = () => {
-    setUsername('')
-    setPassword('')
-    linkTo('/Play')
+    setPasswordErrors(isValidPassword(password))
   }
 
   return (
@@ -30,16 +41,41 @@ const Login = () => {
           <Text style={styles.inputLabel}>USERNAME</Text>
           <TextInput
             style={styles.input}
-            onChangeText={un => setUsername(un)}
+            onChangeText={changeUsername}
             value={username}
           />
-          <Text style={styles.inputLabel}>PASSWORD</Text>
+          <View style={styles.errorContainer}></View>
+          <Text
+            style={
+              passwordErrors.length
+                ? styles.inputLabelError
+                : styles.inputLabel
+            }
+          >
+            PASSWORD
+          </Text>
           <TextInput
-            style={styles.input}
+            style={
+              passwordErrors.length
+                ? styles.inputError
+                : styles.input
+            }
             secureTextEntry
-            onChangeText={pw => setPassword(pw)}
+            onChangeText={changePassword}
             value={password}
           />
+          <View style={styles.errorContainer}>
+            {passwordErrors.map(err => {
+              return (
+                <Text
+                  style={styles.errorText}
+                  key={`pwErr-${err.split(' ').join('_')}`}
+                >
+                  {err}
+                </Text>
+              )
+            })}
+          </View>
           <Pressable
             style={styles.submitButton}
             onPress={handleSubmit}
@@ -76,14 +112,29 @@ const styles = StyleSheet.create({
   },
   inputLabel: {
     fontWeight: 'bold',
-    color: '#551E85'
+    color: '#551E85',
   },
   input: {
     borderWidth: 1,
     borderColor: '#000',
     borderRadius: 10,
     padding: 10,
+  },
+  inputLabelError: {
+    fontWeight: 'bold',
+    color: 'red',
+  },
+  inputError: {
+    borderWidth: 1,
+    borderColor: 'red',
+    borderRadius: 10,
+    padding: 10,
+  },
+  errorContainer: {
     marginBottom: 10,
+  },
+  errorText: {
+    color: 'red',
   },
   submitButton: {
     borderRadius: 15,

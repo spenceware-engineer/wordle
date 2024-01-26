@@ -2,7 +2,7 @@ import { atom } from 'recoil'
 
 const currentUserState = atom({
   key: 'currentUser',
-  default: null
+  default: ''
 })
 
 export default currentUserState

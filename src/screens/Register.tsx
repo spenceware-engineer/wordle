@@ -11,45 +11,138 @@ import {
   SafeAreaView
 } from 'react-native-safe-area-context'
 import { useLinkTo } from '@react-navigation/native'
+import {
+  isValidPassword,
+  isValidUsername,
+  passwordMatch
+} from '../utils/validations'
 
 const Register = () => {
   const linkTo = useLinkTo()
   const [ username, setUsername ] = useState('')
   const [ password, setPassword ] = useState('')
   const [ confPwd, setConfPwd ] = useState('')
+  const [ usernameErrors, setUsernameErrors ] = useState<string[]>([])
+  const [ passwordErrors, setPasswordErrors ] = useState<string[]>([])
+  const [ confPwdErrors, setConfPwdErrors ] = useState<string[]>([])
 
-  const handleSubmit = () => {
-    setUsername('')
-    setPassword('')
-    setConfPwd('')
-    linkTo('/Play')
+  const changeUsername = (un: string) => {
+    setUsernameErrors([])
+    setUsername(un)
   }
 
+  const changePassword = (pw: string) => {
+    setPasswordErrors([])
+    setPassword(pw)
+  }
+
+  const changeConfPwd = (cpw: string) => {
+    setConfPwdErrors([])
+    setConfPwd(cpw)
+  }
+
+  const handleSubmit = () => {
+    setUsernameErrors(isValidUsername(username))
+    setPasswordErrors(isValidPassword(password))
+    setConfPwdErrors(passwordMatch(password, confPwd))
+  }
 
   return (
     <SafeAreaProvider>
       <SafeAreaView style={styles.container}>
         <View style={styles.formContainer}>
-          <Text style={styles.inputLabel}>USERNAME</Text>
+          <Text
+            style={
+              usernameErrors.length
+                ? styles.inputLabelError
+                : styles.inputLabel
+            }
+          >
+            USERNAME
+          </Text>
           <TextInput
-            style={styles.input}
-            onChangeText={un => setUsername(un)}
+            style={
+              usernameErrors.length
+                ? styles.inputError
+                : styles.input
+            }
+            onChangeText={changeUsername}
             value={username}
           />
-          <Text style={styles.inputLabel}>PASSWORD</Text>
+          <View style={styles.errorContainer}>
+            {usernameErrors.map(err => {
+              return (
+                <Text
+                  style={styles.errorText}
+                  key={`unErr-${err.split(' ').join('_')}`}
+                >
+                  {err}
+                </Text>
+              )
+            })}
+          </View>
+          <Text
+            style={
+              passwordErrors.length
+                ? styles.inputLabelError
+                : styles.inputLabel
+            }
+          >
+            PASSWORD
+          </Text>
           <TextInput
             secureTextEntry
-            style={styles.input}
-            onChangeText={pw => setPassword(pw)}
+            style={
+              passwordErrors.length
+                ? styles.inputError
+                : styles.input
+            }
+            onChangeText={changePassword}
             value={password}
           />
-          <Text style={styles.inputLabel}>CONFIRM PASSWORD</Text>
+          <View style={styles.errorContainer}>
+            {passwordErrors.map(err => {
+              return (
+                <Text
+                  style={styles.errorText}
+                  key={`pwdErr-${err.split(' ').join('_')}`}
+                >
+                  {err}
+                </Text>
+              )
+            })}
+          </View>
+          <Text
+            style={
+              confPwdErrors.length
+                ? styles.inputLabelError
+                : styles.inputLabel
+            }
+          >
+            CONFIRM PASSWORD
+          </Text>
           <TextInput
             secureTextEntry
-            style={styles.input}
-            onChangeText={cpw => setConfPwd(cpw)}
+            style={
+              confPwdErrors.length
+                ? styles.inputError
+                : styles.input
+            }
+            onChangeText={changeConfPwd}
             value={confPwd}
           />
+          <View style={styles.errorContainer}>
+            {confPwdErrors.map(err => {
+              return (
+                <Text
+                  style={styles.errorText}
+                  key={`confPwdErr-${err.split(' ').join('_')}`}
+                >
+                  {err}
+                </Text>
+              )
+            })}
+          </View>
           <Pressable
             style={styles.submitButton}
             onPress={handleSubmit}
@@ -93,7 +186,22 @@ const styles = StyleSheet.create({
     borderColor: '#000',
     borderRadius: 10,
     padding: 10,
+  },
+  inputLabelError: {
+    fontWeight: 'bold',
+    color: 'red',
+  },
+  inputError: {
+    borderWidth: 1,
+    borderColor: 'red',
+    borderRadius: 10,
+    padding: 10,
+  },
+  errorContainer: {
     marginBottom: 10,
+  },
+  errorText: {
+    color: 'red'
   },
   submitButton: {
     borderRadius: 15,
