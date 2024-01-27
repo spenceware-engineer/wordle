@@ -8,8 +8,28 @@ import {
   Text,
   View,
 } from 'react-native'
+import { useSetRecoilState, useRecoilValue } from 'recoil'
+import gameStatusState from 'recoil/gameStatusAtom'
+import guessesState from 'recoil/guessesAtom'
+import guessNumberState from 'recoil/guessNumberAtom'
+import currentGuessState from 'recoil/currentGuessAtom'
+import hitsState from 'recoil/hitsAtom'
 
 const LevelSuccess = () => {
+  const setCurrentGuess = useSetRecoilState(currentGuessState)
+  const setGameStatus = useSetRecoilState(gameStatusState)
+  const setGuesses = useSetRecoilState(guessesState)
+  const setGuessNumber = useSetRecoilState(guessNumberState)
+  const setHits = useSetRecoilState(hitsState)
+
+  const startNextLevel = () => {
+    setGuesses([])
+    setCurrentGuess('')
+    setGuessNumber(0)
+    setHits({})
+    setGameStatus('playing')
+  }
+
   return (
     <SafeAreaProvider>
       <SafeAreaView style={styles.container}>
@@ -19,7 +39,10 @@ const LevelSuccess = () => {
           >
             YOU WON!
           </Text>
-          <Pressable style={styles.continueButton}>
+          <Pressable
+            onPress={startNextLevel}
+            style={styles.continueButton}
+          >
             <Text style={styles.buttonText}>
               CONTINUE
             </Text>

@@ -2,7 +2,7 @@ import { atom } from 'recoil'
 
 const currentWordState = atom({
   key: 'currentWord',
-  default: 'hello'
+  default: ''
 })
 
 export default currentWordState

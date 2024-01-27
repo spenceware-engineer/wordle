@@ -1,21 +1,17 @@
 import {
-  View
+  View,
 } from 'react-native'
 import GuessRow from './GuessRow'
-import { useRecoilValue } from 'recoil'
-import guessesState from '../../recoil/guessesAtom'
 
 const GuessArea = () => {
-  const guesses = useRecoilValue(guessesState)
-
   return (
     <View>
-      <GuessRow guess={guesses?.[ 0 ] || ''} />
-      <GuessRow guess={guesses?.[ 1 ] || ''} />
-      <GuessRow guess={guesses?.[ 2 ] || ''} />
-      <GuessRow guess={guesses?.[ 3 ] || ''} />
-      <GuessRow guess={guesses?.[ 4 ] || ''} />
-      <GuessRow guess={guesses?.[ 5 ] || ''} />
+      <GuessRow guessNo={0} />
+      <GuessRow guessNo={1} />
+      <GuessRow guessNo={2} />
+      <GuessRow guessNo={3} />
+      <GuessRow guessNo={4} />
+      <GuessRow guessNo={5} />
     </View>
   )
 }
