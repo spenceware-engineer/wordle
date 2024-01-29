@@ -1,8 +1,4 @@
 import {
-  SafeAreaProvider,
-  SafeAreaView
-} from 'react-native-safe-area-context'
-import {
   Pressable,
   StyleSheet,
   Text,
@@ -14,6 +10,10 @@ import guessesState from 'recoil/guessesAtom'
 import guessNumberState from 'recoil/guessNumberAtom'
 import currentGuessState from 'recoil/currentGuessAtom'
 import hitsState from 'recoil/hitsAtom'
+import currentWordState from 'recoil/currentWordAtom'
+import currentUserState from 'recoil/currentUserAtom'
+import { completeWord } from 'utils/requests'
+import currentScoreState from 'recoil/currentScoreAtom'
 
 const LevelSuccess = () => {
   const setCurrentGuess = useSetRecoilState(currentGuessState)
@@ -21,47 +21,54 @@ const LevelSuccess = () => {
   const setGuesses = useSetRecoilState(guessesState)
   const setGuessNumber = useSetRecoilState(guessNumberState)
   const setHits = useSetRecoilState(hitsState)
+  const setCurrentScore = useSetRecoilState(currentScoreState)
+  const setCurrentWord = useSetRecoilState(currentWordState)
+  const currentWord = useRecoilValue(currentWordState)
+  const currentUser = useRecoilValue(currentUserState)
 
-  const startNextLevel = () => {
+  const startNextLevel = async () => {
     setGuesses([])
     setCurrentGuess('')
     setGuessNumber(0)
     setHits({})
+    try {
+      const {
+        word,
+        score,
+        data,
+        status
+      } = await completeWord(currentUser, currentWord)
+      if (status === 500) {
+        throw new Error(JSON.stringify(data))
+      }
+      if (word) setCurrentWord(word)
+      score ?? setCurrentScore(score)
+    } catch (e) {
+      console.log(e)
+    }
     setGameStatus('playing')
   }
 
   return (
-    <SafeAreaProvider>
-      <SafeAreaView style={styles.container}>
-        <View style={styles.resultContainer}>
-          <Text
-            style={styles.winText}
-          >
-            YOU WON!
-          </Text>
-          <Pressable
-            onPress={startNextLevel}
-            style={styles.continueButton}
-          >
-            <Text style={styles.buttonText}>
-              CONTINUE
-            </Text>
-          </Pressable>
-        </View>
-      </SafeAreaView>
-    </SafeAreaProvider>
+    <View style={styles.resultContainer}>
+      <Text
+        style={styles.winText}
+      >
+        YOU WON!
+      </Text>
+      <Pressable
+        onPress={startNextLevel}
+        style={styles.continueButton}
+      >
+        <Text style={styles.buttonText}>
+          CONTINUE
+        </Text>
+      </Pressable>
+    </View>
   )
 }
 
 const styles = StyleSheet.create({
-  container: {
-    backgroundColor: '#7B2CBF',
-    height: '100%',
-    width: '100%',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
   resultContainer: {
     backgroundColor: '#FFF',
     borderRadius: 15,

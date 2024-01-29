@@ -1,25 +1,29 @@
 import { useState } from 'react'
 import {
-  SafeAreaProvider,
-  SafeAreaView
-} from 'react-native-safe-area-context'
-import {
   Pressable,
   StyleSheet,
   Text,
   TextInput,
   View
 } from 'react-native'
-import { useLinkTo } from '@react-navigation/native'
 import {
   isValidPassword,
 } from '../utils/validations'
-import Toast from 'react-native-toast-message'
+import { loginUser } from 'utils/requests'
+import { useSetRecoilState } from 'recoil'
+import currentWordState from 'recoil/currentWordAtom'
+import currentUserState from 'recoil/currentUserAtom'
+import currentScoreState from 'recoil/currentScoreAtom'
+import gameStatusState from 'recoil/gameStatusAtom'
 
 const Login = () => {
-  const linkTo = useLinkTo()
+  const setCurrentWord = useSetRecoilState(currentWordState)
+  const setCurrentUser = useSetRecoilState(currentUserState)
+  const setCurrentScore = useSetRecoilState(currentScoreState)
+  const setGameStatus = useSetRecoilState(gameStatusState)
   const [ username, setUsername ] = useState('')
   const [ password, setPassword ] = useState('')
+  const [ usernameErrors, setUsernameErrors ] = useState<string[]>([])
   const [ passwordErrors, setPasswordErrors ] = useState<string[]>([])
 
   const changeUsername = (un: string) => {
@@ -31,79 +35,107 @@ const Login = () => {
     setPassword(pw)
   }
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     setPasswordErrors(isValidPassword(password))
+    if (!passwordErrors.length) {
+      try {
+        const {
+          message,
+          status,
+          word,
+          username: un,
+          score,
+          data,
+        } = await loginUser(username, password)
+        switch (status) {
+          case 200:
+            setCurrentUser(un)
+            setCurrentScore(score)
+            setCurrentWord(word)
+            setGameStatus('playing')
+            break
+          case 404:
+            setUsernameErrors([ message ])
+            break
+          case 403:
+            setPasswordErrors([ message ])
+            break
+          case 500:
+            throw new Error(JSON.stringify(data))
+        }
+      } catch (e) {
+        console.log(e)
+      }
+    }
   }
 
   return (
-    <SafeAreaProvider>
-      <SafeAreaView style={styles.container}>
-        <Toast />
-        <View style={styles.formContainer}>
-          <Text style={styles.inputLabel}>USERNAME</Text>
-          <TextInput
-            style={styles.input}
-            onChangeText={changeUsername}
-            value={username}
-          />
-          <View style={styles.errorContainer}></View>
-          <Text
-            style={
-              passwordErrors.length
-                ? styles.inputLabelError
-                : styles.inputLabel
-            }
-          >
-            PASSWORD
-          </Text>
-          <TextInput
-            style={
-              passwordErrors.length
-                ? styles.inputError
-                : styles.input
-            }
-            secureTextEntry
-            onChangeText={changePassword}
-            value={password}
-          />
-          <View style={styles.errorContainer}>
-            {passwordErrors.map(err => {
-              return (
-                <Text
-                  style={styles.errorText}
-                  key={`pwErr-${err.split(' ').join('_')}`}
-                >
-                  {err}
-                </Text>
-              )
-            })}
-          </View>
-          <Pressable
-            style={styles.submitButton}
-            onPress={handleSubmit}
-          >
-            <Text style={styles.buttonText}>SIGN IN</Text>
-          </Pressable>
-          <Pressable style={styles.switchAuthLink} onPress={() => linkTo('/Register')}>
-            <Text style={styles.switchAuthText}>
-              Don't have an account? Sign Up
+    <View style={styles.formContainer}>
+      <Text style={styles.inputLabel}>USERNAME</Text>
+      <TextInput
+        style={styles.input}
+        onChangeText={changeUsername}
+        value={username}
+      />
+      <View style={styles.errorContainer}>
+        {usernameErrors.map(err => {
+          return (
+            <Text
+              style={styles.errorText}
+              key={`unErr-${err.split(' ').join('_')}`}
+            >
+              {err}
             </Text>
-          </Pressable>
-        </View>
-      </SafeAreaView>
-    </SafeAreaProvider>
+          )
+        })}
+      </View>
+      <Text
+        style={
+          passwordErrors.length
+            ? styles.inputLabelError
+            : styles.inputLabel
+        }
+      >
+        PASSWORD
+      </Text>
+      <TextInput
+        style={
+          passwordErrors.length
+            ? styles.inputError
+            : styles.input
+        }
+        secureTextEntry
+        onChangeText={changePassword}
+        value={password}
+      />
+      <View style={styles.errorContainer}>
+        {passwordErrors.map(err => {
+          return (
+            <Text
+              style={styles.errorText}
+              key={`pwErr-${err.split(' ').join('_')}`}
+            >
+              {err}
+            </Text>
+          )
+        })}
+      </View>
+      <Pressable
+        style={styles.submitButton}
+        onPress={handleSubmit}
+      >
+        <Text style={styles.buttonText}>SIGN IN</Text>
+      </Pressable>
+      <Pressable style={styles.switchAuthLink} onPress={() => setGameStatus('register')}>
+        <Text style={styles.switchAuthText}>
+          Don't have an account? Sign Up
+        </Text>
+      </Pressable>
+    </View>
   )
 }
 
 const styles = StyleSheet.create({
-  container: {
-    backgroundColor: '#7B2CBF',
-    height: '100%',
-    width: '100%',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
   formContainer: {
     backgroundColor: '#FFF',
     borderRadius: 15,

@@ -1,4 +1,3 @@
-
 export const isValidUsername = (username: string) => {
   let errors = []
   if (!username) errors.push('Please enter a username')

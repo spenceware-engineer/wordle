@@ -1,25 +1,31 @@
 import { StatusBar } from 'expo-status-bar'
 import { StyleSheet } from 'react-native'
 import { RecoilRoot } from 'recoil'
-import { NavigationContainer } from '@react-navigation/native'
 import RootNavigator from './src/navigation/RootNavigator'
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context'
+import { Toast } from 'react-native-toast-message/lib/src/Toast'
 
 export default function App() {
   return (
-    <NavigationContainer>
-      <RecoilRoot>
-        <RootNavigator />
-        <StatusBar translucent />
-      </RecoilRoot>
-    </NavigationContainer>
+    <RecoilRoot>
+      <SafeAreaProvider>
+        <SafeAreaView style={styles.container}>
+          <Toast />
+          <RootNavigator />
+          <StatusBar translucent />
+        </SafeAreaView>
+      </SafeAreaProvider>
+    </RecoilRoot>
   )
 }
 
 const styles = StyleSheet.create({
   container: {
+    backgroundColor: '#7B2CBF',
+    height: '100%',
+    width: '100%',
     display: 'flex',
-    backgroundColor: '#7b2cbf',
-    alignItems: 'center',
     justifyContent: 'center',
+    alignItems: 'center',
   },
 })

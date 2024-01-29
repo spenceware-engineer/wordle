@@ -1,9 +1,6 @@
 import {
-  SafeAreaProvider,
-  SafeAreaView,
-} from 'react-native-safe-area-context'
-import {
   StyleSheet,
+  View,
 } from 'react-native'
 import TopDisplay from '../../components/TopDisplay'
 import BottomOptions from '../../components/BottomOptions'
@@ -12,14 +9,12 @@ import Keyboard from '../../components/Keyboard/Keyboard'
 
 const Game = () => {
   return (
-    <SafeAreaProvider>
-      <SafeAreaView style={styles.container}>
-        <TopDisplay />
-        <GuessArea />
-        <Keyboard />
-        <BottomOptions />
-      </SafeAreaView>
-    </SafeAreaProvider>
+    <View style={styles.container}>
+      <TopDisplay />
+      <GuessArea />
+      <Keyboard />
+      <BottomOptions />
+    </View>
   )
 }
 
@@ -30,8 +25,8 @@ const styles = StyleSheet.create({
     width: '100%',
     display: 'flex',
     padding: 20,
-    justifyContent: 'space-between'
-  },
+    justifyContent: 'space-between',
+  }
 })
 
 export default Game

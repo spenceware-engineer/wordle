@@ -1,19 +1,18 @@
 import {
-  SafeAreaProvider,
-  SafeAreaView
-} from 'react-native-safe-area-context'
-import {
   Pressable,
   StyleSheet,
   Text,
   View,
 } from 'react-native'
-import { useSetRecoilState } from 'recoil'
+import { useSetRecoilState, useRecoilValue } from 'recoil'
 import guessesState from 'recoil/guessesAtom'
 import currentGuessState from 'recoil/currentGuessAtom'
 import guessNumberState from 'recoil/guessNumberAtom'
 import gameStatusState from 'recoil/gameStatusAtom'
 import hitsState from 'recoil/hitsAtom'
+import currentUserState from 'recoil/currentUserAtom'
+import currentWordState from 'recoil/currentWordAtom'
+import { generateWord } from 'utils/requests'
 
 const LevelFail = () => {
   const setGuesses = useSetRecoilState(guessesState)
@@ -21,8 +20,31 @@ const LevelFail = () => {
   const setGuessNumber = useSetRecoilState(guessNumberState)
   const setGameStatus = useSetRecoilState(gameStatusState)
   const setHits = useSetRecoilState(hitsState)
+  const setCurrentWord = useSetRecoilState(currentWordState)
+  const currentUser = useRecoilValue(currentUserState)
 
-  const startNextLevel = () => {
+  const startNextLevel = async () => {
+    try {
+      const {
+        word,
+        status,
+        data
+      } = await generateWord(currentUser)
+      if (status === 500) {
+        throw new Error(JSON.stringify(data))
+      }
+      if (word) setCurrentWord(word)
+    } catch (e) {
+      console.log(e)
+    }
+    setGuesses([])
+    setCurrentGuess('')
+    setGuessNumber(0)
+    setHits({})
+    setGameStatus('playing')
+  }
+
+  const restartLevel = () => {
     setGuesses([])
     setCurrentGuess('')
     setGuessNumber(0)
@@ -31,45 +53,33 @@ const LevelFail = () => {
   }
 
   return (
-    <SafeAreaProvider>
-      <SafeAreaView style={styles.container}>
-        <View style={styles.resultContainer}>
-          <Text style={styles.failText}>
-            ROUND OVER
+    <View style={styles.resultContainer}>
+      <Text style={styles.failText}>
+        ROUND OVER
+      </Text>
+      <View style={styles.buttonContainer}>
+        <Pressable
+          onPress={restartLevel}
+          style={styles.button}
+        >
+          <Text style={styles.buttonText}>
+            RETRY
           </Text>
-          <View style={styles.buttonContainer}>
-            <Pressable
-              onPress={startNextLevel}
-              style={styles.button}
-            >
-              <Text style={styles.buttonText}>
-                RETRY
-              </Text>
-            </Pressable>
-            <Pressable
-              onPress={startNextLevel}
-              style={styles.button}
-            >
-              <Text style={styles.buttonText}>
-                NEXT
-              </Text>
-            </Pressable>
-          </View>
-        </View>
-      </SafeAreaView>
-    </SafeAreaProvider>
+        </Pressable>
+        <Pressable
+          onPress={startNextLevel}
+          style={styles.button}
+        >
+          <Text style={styles.buttonText}>
+            NEXT
+          </Text>
+        </Pressable>
+      </View>
+    </View>
   )
 }
 
 const styles = StyleSheet.create({
-  container: {
-    backgroundColor: '#7B2CBF',
-    height: '100%',
-    width: '100%',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
   resultContainer: {
     backgroundColor: '#FFF',
     borderRadius: 15,
